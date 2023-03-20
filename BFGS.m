@@ -1,4 +1,4 @@
-function [xk, dk, alk, iWk, Hk] = BFGS(x1,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
+function [Xmin, k] = BFGS(x1,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
     n = length(x1); I = eye(n);
     xk = []; x = x1; xk = [xk, x1]; 
     Hk = []; H = eye(n); Hk = [Hk, H]; 
@@ -25,4 +25,5 @@ function [xk, dk, alk, iWk, Hk] = BFGS(x1,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps
         k = k + 1; 
         xk = [xk, x]; dk = [dk, d]; alk = [alk, al]; iWk = [iWk, iWc]; Hk(:, :, k) = H;         
     end
+        Xmin = xk(:, end); 
 end
