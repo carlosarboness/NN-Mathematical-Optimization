@@ -65,7 +65,7 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
     L = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
     gL = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
 
-    method = 'Gradient'; 
+    method = 'QNM'; 
     switch method 
         case 'Gradient'
             [wo, niter] = GM(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
@@ -73,7 +73,7 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
             [wo, niter] = BFGS(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
     end
 
-    fo = Lw(wo); % minimum value of the objective function
+    fo = L(wo); % minimum value of the objective function
     
     delta = @(x, y) double(x==y); % kronecker delta, returns 1 if x & y are equal, returns 0 otherwise
    
