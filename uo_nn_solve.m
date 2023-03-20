@@ -60,19 +60,19 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
     % Gradient of the objective funciton
     gL = @(w,Xtr,ytr) (2*sig(Xtr)*((y(Xtr,w)-ytr).*y(Xtr,w).*(1-y(Xtr,w)))')/size(ytr,2)+la*w;
     
-    w1 = ones(length(Xtr(:,1)),1);               % initial solution vector
+    w1 = rand(length(Xtr(:,1)),1); % initial random solution vector
 
-    L = @(w) L(w, Xtr, ytr); Lw = @(w) L(w);     % evaluate at Xtr and ytr
-    gL = @(w) gL(w, Xtr, ytr); gLw = @(w) gL(w); % evaluate at Xtr and ytr
+    L = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
+    gL = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
 
-    method = 'QNM'; 
+    method = 'Gradient'; 
     switch method 
         case 'Gradient'
-            [wo, niter] = GM(w1,Lw,gLw,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
+            [wo, niter] = GM(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
         case 'QNM'
-            [wo, niter] = BFGS(w1,Lw,gLw,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
+            [wo, niter] = BFGS(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
     end
-    
+
     fo = Lw(wo); % minimum value of the objective function
     
     delta = @(x, y) double(x==y); % kronecker delta, returns 1 if x & y are equal, returns 0 otherwise
