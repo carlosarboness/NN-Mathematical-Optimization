@@ -47,6 +47,7 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
     tic     % inicialize counter 
     
     [Xtr, ytr] = uo_nn_dataset(tr_seed, tr_p, num_target, tr_freq); % training set
+    [Xte, yte] = uo_nn_dataset(te_seed, te_q, num_target, 0.0); % testing set
     
     % activation function (sigmoid function) 
     sig = @(Xtr) 1./(1+exp(-Xtr));
@@ -62,25 +63,23 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
     
     w1 = rand(length(Xtr(:,1)),1); % initial random solution vector
 
-    L = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
-    gL = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
+    L_w = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
+    gL_w = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
  
     switch isd 
         case 1 % Gradient 
-            [wo, niter] = GM(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
+            [wo, niter] = GM(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
         case 3 % QNM
-            [wo, niter] = BFGS(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal); 
+            [wo, niter] = BFGS(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal); 
         case 7 % Stochastic Gradient
-            [wo, niter] = SGM(w1,la,L,gL,Xtr,ytr,Xte,yte,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest); 
+            [wo, niter] = SGM(w1,la,L,gL,Xtr,ytr,Xte,yte,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest, sg_seed); 
     end
 
-    fo = L(wo); 
+    fo = L_w(wo); 
     
     delta = @(x, y) double(x==y); % kronecker delta, returns 1 if x & y are equal, returns 0 otherwise
    
     tr_acc = (100/tr_p)*sum(delta(round(y(Xtr, wo)),ytr)); % training accuracy (%)
-
-    [Xte, yte] = uo_nn_dataset(te_seed, te_q, num_target, 0.0); % testing set
 
     te_acc = (100/te_q)*sum(delta(round(y(Xte, wo)),yte)); % test accuracy (%)
 
