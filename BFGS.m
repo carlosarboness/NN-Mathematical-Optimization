@@ -1,7 +1,7 @@
 function [Xmin, k] = BFGS(x1,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
     n = length(x1); I = eye(n);
-    xk = []; x = x1; xk = [xk, x1]; 
-    Hk = []; H = eye(n); Hk = [Hk, H]; 
+    x = x1; xk = x; 
+    H = eye(n); Hk = H; 
     dk = [];  alk = []; iWk = [];  
     k = 1; alpham = 1; 
     while norm(g(x)) > epsG && k < kmax
