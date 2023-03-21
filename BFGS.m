@@ -8,7 +8,7 @@ function [Xmin, k] = BFGS(x1,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps)
         d = -H*g(x); 
         if k > 1
             if ialmax == 1
-                alpham = alpham*(g(xk(:,k-1))'*d(:,k-1))/(g(x)'*d); 
+                alpham = alpham*(g(xk(:,k-1))'*dk(:,k-1))/(g(x)'*d); 
             else 
                 alpham = 2*(f(x)-f(xk(:,k-1)))/(g(x)'*d); 
             end 

@@ -16,7 +16,7 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
 %       epsG : optimality tolerance.
 %       kmax : maximum number of iterations.
 %        ils : line search (1 if exact, 2 if uo_BLS, 3 if uo_BLSNW32)
-%     ialmax :  formula for the maximum step lenght (1 or 2).
+%     ialmax : formula for the maximum step lenght (1 or 2).
 %    kmaxBLS : maximum number of iterations of the uo_BLSNW32.
 %      epsal : minimum progress in alpha, algorithm up_BLSNW32
 %      c1,c2 : (WC) parameters.
@@ -64,16 +64,17 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex]=uo_nn_solve(num_target,
 
     L = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
     gL = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
-
-    method = 'QNM'; 
-    switch method 
-        case 'Gradient'
+ 
+    switch isd 
+        case 1 % Gradient 
             [wo, niter] = GM(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
-        case 'QNM'
-            [wo, niter] = BFGS(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
+        case 3 % QNM
+            [wo, niter] = BFGS(w1,L,gL,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal); 
+        case 7 % Stochastic Gradient
+            [wo, niter] = SGM(w1,la,L,gL,Xtr,ytr,Xte,yte,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest); 
     end
 
-    fo = L(wo); % minimum value of the objective function
+    fo = L(wo); 
     
     delta = @(x, y) double(x==y); % kronecker delta, returns 1 if x & y are equal, returns 0 otherwise
    
