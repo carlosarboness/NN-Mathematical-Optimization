@@ -1,7 +1,7 @@
-function [x, k] = BFGS(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
+function [x, k,Lk] = BFGS(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
     n = length(x); I = eye(n);
     xk = x; H = eye(n); Hk = H; 
-    dk = [];  alk = []; iWk = [];  
+    dk = [];  alk = []; iWk = []; Lk = f(x);  
     k = 1; alpham = 1; 
     while norm(g(x)) > epsG && k < kmax
         d = -H*g(x); 
@@ -22,6 +22,7 @@ function [x, k] = BFGS(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps)
         H = (I - rhok*sk*yk')*H*(I - rhok*yk*sk') + rhok*(sk*sk');
         
         k = k + 1; 
-        xk = [xk, x]; dk = [dk, d]; alk = [alk, al]; iWk = [iWk, iWc]; Hk(:, :, k) = H;         
+        xk = [xk, x]; dk = [dk, d]; alk = [alk, al]; iWk = [iWk, iWc]; Hk(:, :, k) = H;
+        Lk = [Lk f(x)];
     end 
 end

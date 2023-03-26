@@ -1,0 +1,11 @@
+
+
+```{r}
+setwd(getwd())
+dd = read.csv2("uo_nn_batch_123456-789101.csv",sep=";")
+```
+
+```{r}
+dd1 = dd["isd"==1,]
+```
+

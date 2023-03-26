@@ -1,5 +1,5 @@
-function [x, k] = GM(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
-    xk = x; alk = []; dk = []; iWk = [];  
+function [x, k,Lk] = GM(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps) 
+    xk = x; alk = []; dk = []; iWk = []; Lk = f(x);  
     k = 1; alpham = 1; 
     while norm(g(x)) > epsG && k < kmax
         d = -g(x); 
@@ -12,6 +12,7 @@ function [x, k] = GM(x,f,g,epsG,kmax,c1,c2,ialmax,maxiter,eps)
         end 
         [al, iWc] = uo_BLSNW32(f,g,x,d,alpham,c1,c2,maxiter,eps); 
         x = x + al*d; k = k + 1; 
-        xk = [xk, x]; dk = [dk, d]; alk = [alk, al]; iWk = [iWk, iWc];          
+        xk = [xk, x]; dk = [dk, d]; alk = [alk, al]; iWk = [iWk, iWc];
+        Lk = [Lk f(x)];
     end
 end
