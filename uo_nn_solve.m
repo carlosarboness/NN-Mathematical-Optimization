@@ -2,7 +2,7 @@
 % OM / GCED / F.-Javier Heredia https://gnom.upc.edu/heredia
 % Procedure uo_nn_solve
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk]=uo_nn_solve(num_target,tr_freq,tr_seed,tr_p,te_seed,te_q,la,epsG,kmax,ils,ialmax,kmaxBLS,epsal,c1,c2,isd,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest,sg_seed,icg,irc,nu)
+function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk,go]=uo_nn_solve(num_target,tr_freq,tr_seed,tr_p,te_seed,te_q,la,epsG,kmax,ils,ialmax,kmaxBLS,epsal,c1,c2,isd,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest,sg_seed,icg,irc,nu)
 %
 % Input parameters:
 %
@@ -76,7 +76,8 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk]=uo_nn_solve(num_targ
     end
 
     fo = L_w(wo); 
-    
+    go = norm(gL_w(wo));
+
     delta = @(x, y) double(x==y); % kronecker delta, returns 1 if x & y are equal, returns 0 otherwise
    
     tr_acc = (100/tr_p)*sum(delta(round(y(Xtr, wo)),ytr)); % training accuracy (%)
