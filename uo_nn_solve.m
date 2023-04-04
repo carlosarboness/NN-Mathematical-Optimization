@@ -2,7 +2,7 @@
 % OM / GCED / F.-Javier Heredia https://gnom.upc.edu/heredia
 % Procedure uo_nn_solve
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk,go]=uo_nn_solve(num_target,tr_freq,tr_seed,tr_p,te_seed,te_q,la,epsG,kmax,ils,ialmax,kmaxBLS,epsal,c1,c2,isd,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest,sg_seed,icg,irc,nu)
+function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk,go,bls_t]=uo_nn_solve(num_target,tr_freq,tr_seed,tr_p,te_seed,te_q,la,epsG,kmax,ils,ialmax,kmaxBLS,epsal,c1,c2,isd,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest,sg_seed,icg,irc,nu)
 %
 % Input parameters:
 %
@@ -65,14 +65,15 @@ function [Xtr,ytr,wo,fo,tr_acc,Xte,yte,te_acc,niter,tex,Lk,go]=uo_nn_solve(num_t
     w1 = zeros(35, 1); 
     L_w = @(w) L(w, Xtr, ytr);      % evaluate at Xtr and ytr
     gL_w = @(w) gL(w, Xtr, ytr);    % evaluate at Xtr and ytr
- 
+    
+    bls_t = -1;
     switch isd 
         case 1 % Gradient 
-            [wo, niter, Lk] = GM(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
+            [wo,niter,Lk,bls_t] = GM(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal);  
         case 3 % QNM
-            [wo, niter, Lk] = BFGS(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal); 
+            [wo,niter,Lk,bls_t] = BFGS(w1,L_w,gL_w,epsG,kmax,c1,c2,ialmax,kmaxBLS,epsal); 
         case 7 % Stochastic Gradient
-            [wo, niter, Lk] = SGM(w1,L,gL,Xtr,ytr,Xte,yte,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest, sg_seed); 
+            [wo,niter,Lk] = SGM(w1,L,gL,Xtr,ytr,Xte,yte,sg_al0,sg_be,sg_ga,sg_emax,sg_ebest, sg_seed); 
     end
 
     fo = L_w(wo); 
